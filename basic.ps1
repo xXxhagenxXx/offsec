@@ -29,7 +29,6 @@ function KerberoastHashes{
     }
     Move-Item "$currentPath\hashes.kerberoast" -Destination "$currentPath\Kerberoasting" -Force
 }
-}
 
 <#
 .SYNOPSIS
