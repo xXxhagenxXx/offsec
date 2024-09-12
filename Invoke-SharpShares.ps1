@@ -1,4 +1,4 @@
-function Invoke-Grouper
+function Invoke-SharpShares
 {
 
     [CmdletBinding()]
@@ -19,7 +19,7 @@ function Invoke-Grouper
     $StringWriter = New-Object IO.StringWriter
     [Console]::SetOut($StringWriter)
 
-    [Group3r.Group3r]::Main($Command.Split(" "))
+    [SharpShares.Program]::Main($Command.Split(" "))
 
     [Console]::SetOut($OldConsoleOut)
     $Results = $StringWriter.ToString()
