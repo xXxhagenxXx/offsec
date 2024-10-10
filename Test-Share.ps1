@@ -71,10 +71,10 @@ function Test-SharePaths {
 }
 
 # Example usage: Pass an array of share paths
-$sharePaths = @(
-    "\\server1\sharedfolder1",
-    "\\server2\sharedfolder2",
-    "\\server3\sharedfolder3"
-)
+#$sharePaths = @(
+#    "\\server1\sharedfolder1",
+#    "\\server2\sharedfolder2",
+#    "\\server3\sharedfolder3"
+#)
 
-Test-SharePaths -SharePaths $sharePaths -CsvOutputPath "C:\Path\To\Output.csv"
+#Test-SharePaths -SharePaths $sharePaths -CsvOutputPath "C:\Path\To\Output.csv"
