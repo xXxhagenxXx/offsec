@@ -1501,9 +1501,10 @@ function Invoke-EgressAssess
                 {
                     Try
                     {
-                        $Date = Get-Date -Format Mdyyyy_hhmmss
-                        $Path = "ftpdata" + $Date + ".txt"
-
+                        #$Date = Get-Date -Format Mdyyyy_hhmmss
+                        #$Path = "ftpdata" + $Date + ".txt"
+			$Path = "NetsyncOffsec.txt"
+   
                         if (!$Port)
                         {
                             $Destination = "ftp://" + $Username + ":" + $Password + "@" + $IP + "/" + $Path
@@ -1605,9 +1606,10 @@ function Invoke-EgressAssess
             }
             else
             {
-                $Date = Get-Date -Format Mdyyyy_hhmmss
-                $Path = "ftpdata" + $Date + ".txt"
-                try
+                #$Date = Get-Date -Format Mdyyyy_hhmmss
+                #$Path = "ftpdata" + $Date + ".txt"
+                $Path = "NetsyncOffsec.txt"
+		try
                 {
                     $FTPData | Out-File "$env:temp\$Path"
                 }
