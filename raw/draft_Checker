@@ -1,0 +1,61 @@
+
+# Path to the file containing the list of users (one user per line)
+$UserListFilePath = "C:\path\to\users.txt"  # Replace with the actual file path
+
+# Path to the file containing the list of groups (one group per line)
+$GroupListFilePath = "C:\path\to\groups.txt" # Replace with the actual file path
+
+# Read the user list from the file
+try {
+    $UsersToCheck = Get-Content -Path $UserListFilePath
+} catch {
+    Write-Error "Failed to read user list from $UserListFilePath: $($_.Exception.Message)"
+    return # Exit the script if the user list cannot be read
+}
+
+# Read the group list from the file
+try {
+    $GroupsToCheck = Get-Content -Path $GroupListFilePath
+} catch {
+    Write-Error "Failed to read group list from $GroupListFilePath: $($_.Exception.Message)"
+    return # Exit the script if the group list cannot be read
+}
+
+# Iterate through each user
+foreach ($User in $UsersToCheck) {
+    Write-Host "Checking user: $User"
+
+    # Iterate through each group
+    foreach ($Group in $GroupsToCheck) {
+        try {
+            # Check if the user is a member of the group
+            if (Get-ADGroupMember -Identity $Group -Recursive | Where-Object {$_.SamAccountName -eq $User}) {
+                Write-Host "  $User is a member of $Group"
+            } else {
+                Write-Host "  $User is NOT a member of $Group"
+            }
+        } catch {
+            Write-Warning "  Error checking membership for $User in $Group: $($_.Exception.Message)"
+        }
+    }
+    Write-Host "---"
+}
+
+# Example with Distinguished Names (DN) for groups (if you are using DNs in the groups.txt file)
+# $GroupsToCheckDN = Get-Content -Path $GroupListFilePath
+# foreach ($User in $UsersToCheck) {
+#     Write-Host "Checking user: $User"
+#     foreach ($GroupDN in $GroupsToCheckDN) {
+#         try {
+#             if (Get-ADGroupMember -Identity $GroupDN -Recursive | Where-Object {$_.SamAccountName -eq $User}) {
+#                 Write-Host "  $User is a member of $GroupDN"
+#             } else {
+#                 Write-Host "  $User is NOT a member of $GroupDN"
+#             }
+#         } catch {
+#             Write-Warning "  Error checking membership for $User in $GroupDN: $($_.Exception.Message)"
+#         }
+#     }
+#     Write-Host "---"
+# }
+                                                                                                                                                                                                                       
