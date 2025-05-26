@@ -1,3 +1,46 @@
+
+
+
+
+
+
+
+function AdminAccountCanBeDelegated {
+    param( $FileName = $adminGroups,$Domain)
+    $results = @()
+    foreach($content in Get-Content -Path $FileName){
+        $results += Get-NetGroupMember -Identity $content -Domain $Domain -Recurse | %{Get-NetUser -Identity $_.MemberName -Domain $Domain | Where-Object {($_.useraccountcontrol -notmatch 'ACCOUNTDISABLE') -and ($_.useraccountcontrol -notmatch 'NOT_DELEGATED')}} | Select-Object -Unique SamAccountName
+    }
+    $results | Select-Object -Unique samaccountname | Export-Csv -Path "$currentPath\Admins that can be delegated.csv" -NoTypeInformation
+}
+
+
+
+function notInProtectedUsersGroup {
+    param($FileName = $adminGroups,$Domain)
+    $adminUsers = @()
+    $protectedUsers = Get-NetGroupMember -Identity "Protected Users" -Domain $Domain -Recurse | %{Get-NetUser -Identity $_.MemberName -Domain $Domain | Where-Object {($_.useraccountcontrol -notmatch 'ACCOUNTDISABLE')}} | Select-Object SamAccountName
+    foreach($content in Get-Content -Path $FileName){
+        $adminUsers += Get-NetGroupMember -Identity $content -Domain $Domain -Recurse | %{Get-NetUser -Identity $_.MemberName -Domain $Domain | Where-Object {($_.useraccountcontrol -notmatch 'ACCOUNTDISABLE')}} | Select-Object -Unique SamAccountName
+        }
+    if ($protectedUsers -ne $null){
+            Compare-Object -ReferenceObject $adminUsers -DifferenceObject $protectedUsers | Where-Object { $_.SideIndicator -eq '<=' } | Select-Object -ExpandProperty InputObject
+        }
+}
+
+
+
+
+function notInProtectedUsersGroup {
+    param($FileName = $adminGroups,$Domain)
+    $adminUsers = @()
+    foreach($content in Get-Content -Path $FileName){
+        $adminUsers += Get-NetGroupMember -Identity $content -Domain $Domain -Recurse | %{Get-NetUser -Identity $_.MemberName -Domain $Domain | Where-Object {($_.useraccountcontrol -notmatch 'ACCOUNTDISABLE')}} | Select-Object -Unique SamAccountName
+        }
+	$adminUsers
+}
+
+
 function enumObjectswithDCsyncRights{
 	param($Server = $Server)
 	$Domain = $Server -split '\.'	
@@ -321,3 +364,47 @@ function Get-UserGroupsAndLocalGroups {
 
 # Example usage
 Get-UserGroupsAndLocalGroups
+
+
+
+
+
+
+
+
+
+
+function AdminAccountCanBeDelegated {
+    param( $FileName = $adminGroups,$Domain)
+    $results = @()
+    foreach($content in Get-Content -Path $FileName){
+        $results += Get-NetGroupMember -Identity $content -Domain $Domain -Recurse | %{Get-NetUser -Identity $_.MemberName -Domain $Domain | Where-Object {($_.useraccountcontrol -notmatch 'ACCOUNTDISABLE') -and ($_.useraccountcontrol -notmatch 'NOT_DELEGATED')}} | Select-Object -Unique SamAccountName
+    }
+    $results | Select-Object -Unique samaccountname | Export-Csv -Path "$currentPath\Admins that can be delegated.csv" -NoTypeInformation
+}
+
+
+
+function notInProtectedUsersGroup {
+    param($FileName = $adminGroups,$Domain)
+    $adminUsers = @()
+    $protectedUsers = Get-NetGroupMember -Identity "Protected Users" -Domain $Domain -Recurse | %{Get-NetUser -Identity $_.MemberName -Domain $Domain | Where-Object {($_.useraccountcontrol -notmatch 'ACCOUNTDISABLE')}} | Select-Object SamAccountName
+    foreach($content in Get-Content -Path $FileName){
+        $adminUsers += Get-NetGroupMember -Identity $content -Domain $Domain -Recurse | %{Get-NetUser -Identity $_.MemberName -Domain $Domain | Where-Object {($_.useraccountcontrol -notmatch 'ACCOUNTDISABLE')}} | Select-Object -Unique SamAccountName
+        }
+    if ($protectedUsers -ne $null){
+            Compare-Object -ReferenceObject $adminUsers -DifferenceObject $protectedUsers | Where-Object { $_.SideIndicator -eq '<=' } | Select-Object -ExpandProperty InputObject
+        }
+}
+
+
+
+
+function notInProtectedUsersGroup {
+    param($FileName = $adminGroups,$Domain)
+    $adminUsers = @()
+    foreach($content in Get-Content -Path $FileName){
+        $adminUsers += Get-NetGroupMember -Identity $content -Domain $Domain -Recurse | %{Get-NetUser -Identity $_.MemberName -Domain $Domain | Where-Object {($_.useraccountcontrol -notmatch 'ACCOUNTDISABLE')}} | Select-Object -Unique SamAccountName
+        }
+	$adminUsers
+}
